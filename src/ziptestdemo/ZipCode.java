@@ -7,6 +7,8 @@ package ziptestdemo;
 /**
  *
  * @author Elio Sassine - 2493512
+ * Lab-01: ZipCode
+ * 8/27/2025
  */
 public class ZipCode {
     public int Zip;
@@ -27,7 +29,7 @@ public class ZipCode {
             
     public ZipCode(int zipCode) {
         if (zipCode > 99999 || zipCode < 0) {
-            System.out.println("Error: Invalid zip code");
+            System.out.println("Error: Invalid zip code. " + zipCode + " is more than 5 digits.");
         }
         
         this.Zip = zipCode;
@@ -38,12 +40,16 @@ public class ZipCode {
                 || barCode.charAt(0) != '1' 
                 || barCode.charAt(barCode.length() - 1) != '1') 
         {
-            System.out.println("Error: Invalid barcode string");
+            System.out.println("Error: Invalid barcode string. " + barCode + " is missing the leading 1s.");
         }
         
         this.Zip = parseBarCode(barCode);
     }
     
+    /**
+     * Gets the bar code based on the zip code
+     * @return a bar code that is calculated based off the zip code
+     */
     public String GetBarCode() {
         // Construct the barCode in reverse
         String reverseBarCode = "1";
@@ -54,7 +60,6 @@ public class ZipCode {
             ctr++;
         }
         
-        // TODO: Handle edge case of leading zeros
         for (int i = 0; i < 5 - ctr; i++) {
             reverseBarCode += reversedZipToBarcodeMap[0];
         }
@@ -69,6 +74,11 @@ public class ZipCode {
         return barCode;
     }
     
+    /**
+     * Parses the bar code into a zip code
+     * @param barCode the bar code to parse
+     * @return the zip code based off the bar code
+     */
     public static int parseBarCode(String barCode) {
         // Assume barcode is well-formed as the constructor handles the checks
         barCode = barCode.substring(1, 26);
@@ -92,7 +102,7 @@ public class ZipCode {
                 case "10001" -> result += 7 * power;
                 case "10010" -> result += 8 * power;
                 case "10100" -> result += 9 * power;
-                default -> System.out.println("Error: parsing failed");
+                default -> System.out.println("Error: parsing failed on " + numberInBinary);
             }
         }
         
