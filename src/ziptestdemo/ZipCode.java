@@ -39,7 +39,6 @@ public class ZipCode {
                 || barCode.charAt(barCode.length() - 1) != '1') 
         {
             System.out.println("Error: Invalid barcode string");
-            return;
         }
         
         this.Zip = parseBarCode(barCode);
@@ -48,12 +47,17 @@ public class ZipCode {
     public String GetBarCode() {
         // Construct the barCode in reverse
         String reverseBarCode = "1";
+        int ctr = 0;
         for (int tempZip = this.Zip; tempZip > 0; tempZip /= 10) {
             int currentDigit = tempZip % 10;
             reverseBarCode += reversedZipToBarcodeMap[currentDigit];
+            ctr++;
         }
         
         // TODO: Handle edge case of leading zeros
+        for (int i = 0; i < 5 - ctr; i++) {
+            reverseBarCode += reversedZipToBarcodeMap[0];
+        }
         
         reverseBarCode += "1";
         
@@ -67,18 +71,18 @@ public class ZipCode {
     
     public static int parseBarCode(String barCode) {
         // Assume barcode is well-formed as the constructor handles the checks
-        barCode = barCode.substring(1, 27);
+        barCode = barCode.substring(1, 26);
         int result = 0;
-        for (int i = 0; i < barCode.length() % 5; i++) {
-            String numberInBinary = barCode.substring(i, i + 5);
+        for (int i = 0; i < barCode.length() / 5; i++) {
+            String numberInBinary = barCode.substring(i * 5, i * 5 + 5);
             
             int power = 1;
-            for (int j = 0; j < barCode.length() % 5 - i; j++) {
+            for (int j = 0; j < barCode.length() / 5 - i - 1; j++) {
                 power *= 10;
             }
             
             switch (numberInBinary) {
-                case "11000" -> {}
+                case "11000" -> result += 0 * power;
                 case "00011" -> result += 1 * power;
                 case "00101" -> result += 2 * power;
                 case "00110" -> result += 3 * power;
